@@ -14,9 +14,9 @@ import org.hibernate.annotations.Where;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "patient")
-@SQLDelete(sql = "UPDATE patient SET deleted = true WHERE id=?")
-@Where(clause = "deleted=false")
+//@Table(name = "patient")
+//@SQLDelete(sql = "UPDATE patient SET deleted = true WHERE id=?")
+//@Where(clause = "deleted=false")
 public class Patient  extends User{
         
 	  @ManyToOne(fetch = FetchType.LAZY, optional = false)

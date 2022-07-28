@@ -50,7 +50,7 @@ public class PatientController {
 		return this.patientService.addPatient(patient);
 	}
 	
-	@PutMapping("/updatePatient/{patient}")
+	@PutMapping("/updatePatient/{patientId}")
 	public ResponseEntity<HttpStatus> updatePatient(@RequestBody UpdatePatientOH poh, @PathVariable String patientId) {
 		try {
 
@@ -74,6 +74,18 @@ public class PatientController {
 	}
 	
 	
+	
+	@DeleteMapping("/deletePatient/{patientId}")
+	public ResponseEntity<HttpStatus> deletePatient(@PathVariable String patientId) {
+		try {
+			this.patientService.deletePatient(Long.parseLong(patientId));
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception e) {
+			System.out.println(e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+	}
 	
 	
 	
