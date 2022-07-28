@@ -36,6 +36,7 @@ public Hospital getHospital(long did) {
 @Override
 public Hospital addHospital(Hospital hospital) {
 	// TODO Auto-generated method stub
+	System.out.println(hospital);
 	 hd.save(hospital);
 	 return hospital;
 }

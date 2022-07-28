@@ -5,8 +5,6 @@ import java.util.List;
 import com.spring.task1.entites.Doctor;
 
 public interface DoctorService {
-
- 
 	
 	public List<Doctor> getDoctors();
 	public Doctor getDoctor(long did);

@@ -18,8 +18,7 @@ public class DoctorServiceImp implements DoctorService{
 	public List<Doctor> getDoctors() {
 		// TODO Auto-generated method stub
 		System.out.println(dd);
-		return dd.findAll();
-	}
+		return dd.findAll();	}
 
 	@Override
 	public Doctor getDoctor(long hid) {
@@ -43,9 +42,9 @@ public class DoctorServiceImp implements DoctorService{
 	}
 
 	@Override
-	public void deleteDoctor(long hid) {
+	public void deleteDoctor(long pid) {
 		// TODO Auto-generated method stub
-		Doctor entity =dd.findById(hid).get();
+		Doctor entity =dd.findById(pid).get();
 		dd.delete(entity);
 	}
 
