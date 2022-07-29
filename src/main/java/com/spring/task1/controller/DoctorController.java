@@ -13,6 +13,7 @@ import com.spring.task1.entites.Doctor;
 import com.spring.task1.entites.Hospital;
 import com.spring.task1.services.DoctorService;
 
+import DTO.DeleteDTO;
 import ObjHolders.UpdateDoctorOH;
 
 @RestController
@@ -64,6 +65,7 @@ public class DoctorController {
 			doctor.setEmail(doh.getEmail());
 			doctor.setMobileNo(doh.getMobileNo());
 			doctor.setHospital(h);
+			doctor.setDeleted(doh.isDeleted());
 			this.doctorService.updateDoctor(doctor);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
@@ -74,13 +76,13 @@ public class DoctorController {
 	}
 
 	@DeleteMapping("/deleteDoctor/{doctorid}")
-	public ResponseEntity<HttpStatus> deleteDoctor(@PathVariable String doctorid) {
+	public ResponseEntity deleteDoctor(@PathVariable String doctorid) {
 		try {
 			this.doctorService.deleteDoctor(Long.parseLong(doctorid));
-			return new ResponseEntity<>(HttpStatus.OK);
+			return  ResponseEntity.created(null).body(new DeleteDTO("Sucess! Doctor is deleted", doctorid));
 		} catch (Exception e) {
 			System.out.println(e);
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body( e.getMessage());
 
 		}
 	}

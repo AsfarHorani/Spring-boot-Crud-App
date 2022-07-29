@@ -1,5 +1,6 @@
 package com.spring.task1.entites;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 //@Table(name = "patient")
 //@SQLDelete(sql = "UPDATE patient SET deleted = true WHERE id=?")
+//@SQLDelete(sql = "UPDATE patient SET deleted = true WHERE id=?")
 //@Where(clause = "deleted=false")
 public class Patient  extends User{
         
@@ -24,8 +26,8 @@ public class Patient  extends User{
 	  @OnDelete(action = OnDeleteAction.CASCADE)
 	  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 	  private Doctor doctor;
-	  
-	    private boolean deleted = Boolean.FALSE;
+	  @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false") 
+      private boolean deleted = Boolean.FALSE;
 
 	public Patient() {
 		super();

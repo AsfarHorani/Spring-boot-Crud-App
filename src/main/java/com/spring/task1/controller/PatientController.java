@@ -13,6 +13,7 @@ import com.spring.task1.dao.PatientDao;
 import com.spring.task1.entites.*;
 import com.spring.task1.services.PatientService;
 
+import DTO.DeleteDTO;
 import ObjHolders.UpdateDoctorOH;
 import ObjHolders.UpdatePatientOH;
 
@@ -51,7 +52,7 @@ public class PatientController {
 	}
 	
 	@PutMapping("/updatePatient/{patientId}")
-	public ResponseEntity<HttpStatus> updatePatient(@RequestBody UpdatePatientOH poh, @PathVariable String patientId) {
+	public ResponseEntity updatePatient(@RequestBody UpdatePatientOH poh, @PathVariable String patientId) {
 		try {
 
 			long doctorId = poh.getDoctorId();
@@ -64,11 +65,12 @@ public class PatientController {
 			patient.setEmail(poh.getEmail());
 			patient.setMobileNo(poh.getMobileNo());
 			patient.setDoctor(d);
+			patient.setDeleted(poh.isDeleted());
 			this.patientService.updatePatient(patient);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			System.out.println(e);
+			return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body( e.getMessage());
 
 		}
 	}
@@ -76,13 +78,13 @@ public class PatientController {
 	
 	
 	@DeleteMapping("/deletePatient/{patientId}")
-	public ResponseEntity<HttpStatus> deletePatient(@PathVariable String patientId) {
+	public ResponseEntity deletePatient(@PathVariable String patientId) {
 		try {
-			this.patientService.deletePatient(Long.parseLong(patientId));
-			return new ResponseEntity<>(HttpStatus.OK);
+		    this.patientService.deletePatient(Long.parseLong(patientId));
+			return  ResponseEntity.created(null).body(new DeleteDTO("Sucess! Patient is deleted", patientId));
 		} catch (Exception e) {
 			System.out.println(e);
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body( e.getMessage());
 
 		}
 	}

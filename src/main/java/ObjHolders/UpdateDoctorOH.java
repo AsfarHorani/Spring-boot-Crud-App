@@ -9,11 +9,21 @@ public class UpdateDoctorOH {
 	private String address;
 	private String email;
 	private long hospitalId;
+	private boolean deleted;
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	
+	
+	public boolean isDeleted() {
+		return deleted;
+	}
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 	public String getDept() {
 		return dept;

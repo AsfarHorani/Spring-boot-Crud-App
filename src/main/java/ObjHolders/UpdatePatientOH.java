@@ -6,6 +6,7 @@ public class UpdatePatientOH {
 	private int mobileNo;
 	private String address;
 	private String email;
+	private boolean deleted;
 	private long doctorId;
 	public String getName() {
 		return name;
@@ -14,6 +15,12 @@ public class UpdatePatientOH {
 		this.name = name;
 	}
 	
+	public boolean isDeleted() {
+		return deleted;
+	}
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
 	public int getAge() {
 		return age;
 	}

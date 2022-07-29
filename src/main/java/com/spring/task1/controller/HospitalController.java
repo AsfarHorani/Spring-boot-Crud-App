@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spring.task1.entites.Hospital;
 import com.spring.task1.services.HospitalService;
 
+import DTO.DeleteDTO;
+
 @RestController
 public class HospitalController {
 
@@ -58,13 +60,14 @@ public class HospitalController {
 	}
 
 	@DeleteMapping("/deleteHospital/{hospitalid}")
-	public ResponseEntity<HttpStatus> deleteHospital(@PathVariable String hospitalid) {
+	public ResponseEntity deleteHospital(@PathVariable String hospitalid) {
 		try {
 			this.hospitalService.deleteHospital(Long.parseLong(hospitalid));
-			return new ResponseEntity<>(HttpStatus.OK);
+			return  ResponseEntity.created(null).body(new DeleteDTO("Hospital is deleted", hospitalid));
 		} catch (Exception e) {
 			System.out.println(e);
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			
+			return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body( e.getMessage());
 
 		}
 	}
