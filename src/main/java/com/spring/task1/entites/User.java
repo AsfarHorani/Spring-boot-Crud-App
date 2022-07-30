@@ -62,7 +62,7 @@ public class User {
 	public long getMobileNo() {
 		return mobileNo;
 	}
-	public void setMobileNo(int mobileNo) {
+	public void setMobileNo(long mobileNo) {
 		this.mobileNo = mobileNo;
 	}
 	public String getAddress() {

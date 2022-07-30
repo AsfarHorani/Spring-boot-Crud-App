@@ -13,9 +13,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
-//@Table(name = "doctor")
-//@SQLDelete(sql = "UPDATE doctor SET deleted = true WHERE id=?")
-//@Where(clause = "deleted=false")
+@Table(name = "doctor")
+@SQLDelete(sql = "UPDATE doctor SET deleted = true WHERE id=?")
 public class Doctor extends User {
 
 	@Enumerated(EnumType.ORDINAL)

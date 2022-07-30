@@ -10,9 +10,8 @@ import org.hibernate.annotations.Where;
 import com.spring.task1.Utils.H_Type;
 
 @Entity
-//@Table(name = "hospital")
-//@SQLDelete(sql = "UPDATE hospital SET deleted = true WHERE hid=?")
-//@Where(clause = "deleted=false")
+@Table(name = "hospital")
+@SQLDelete(sql = "UPDATE hospital SET deleted = true WHERE hid=?")
 public class Hospital {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -2,6 +2,10 @@ package com.spring.task1.services;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
+import org.hibernate.Session;
+import org.hibernate.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +18,23 @@ public class PatientServiceImp implements PatientService{
 
 	@Autowired
 	private PatientDao pd;
-	
+	@Autowired
+	EntityManager enitityManager;
 	@Override
-	public List<Patient> getPatients() {
-		// TODO Auto-generated method stub
-		System.out.println("from get patients");
-		return pd.findAll();
-	}
+	public List<Patient> getPatients( ) {
+	// TODO Auto-generated method stub
+    List<Patient> patients = pd.findAll();
+  return patients;
+  }
+//	public List<Patient> getPatients( boolean isDeleted) {
+//		// TODO Auto-generated method stub
+//		Session session = enitityManager.unwrap(Session.class);
+//        Filter filter = session.enableFilter("deletedPatientFilter");
+//        filter.setParameter("isDeleted", isDeleted);
+//        List<Patient> patients = pd.findAll();
+//        session.disableFilter("deletedProductFilter");
+//		return patients;
+//	}
 
 	@Override
 	public Patient getPatient(long pid) {

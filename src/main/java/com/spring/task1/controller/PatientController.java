@@ -14,6 +14,7 @@ import com.spring.task1.entites.*;
 import com.spring.task1.services.PatientService;
 
 import DTO.DeleteDTO;
+import ObjHolders.AddPatientOH;
 import ObjHolders.UpdateDoctorOH;
 import ObjHolders.UpdatePatientOH;
 
@@ -42,22 +43,28 @@ public class PatientController {
 		return this.patientService.getPatient(Long.parseLong(patientId));
 	}
 	
-	@PostMapping("/addPatient/{doctorId}")
-	public Patient addPatient(@RequestBody Patient patient, @PathVariable String doctorId) {
-		Doctor d = dr.findById(Long.parseLong(doctorId)).get();
-
+	@PostMapping("/addPatient")
+	public Patient addPatient(@RequestBody AddPatientOH reqBody) {
+		
+		Patient patient = new Patient();
+		Doctor d = dr.findById(reqBody.getDoctorId()).get();
+		
+		patient.setAddress(reqBody.getAddress());
+		patient.setAge(reqBody.getAge());
+		patient.setEmail(reqBody.getEmail());
+		patient.setMobileNo(reqBody.getMobileNo());
+		patient.setName(reqBody.getName());
 		patient.setDoctor(d);
-
-		return this.patientService.addPatient(patient);
+        return this.patientService.addPatient(patient);
 	}
 	
-	@PutMapping("/updatePatient/{patientId}")
-	public ResponseEntity updatePatient(@RequestBody UpdatePatientOH poh, @PathVariable String patientId) {
+	@PutMapping("/updatePatient")
+	public ResponseEntity updatePatient(@RequestBody UpdatePatientOH poh) {
 		try {
 
 			long doctorId = poh.getDoctorId();
-
-			Patient patient = pr.findById(Long.parseLong(patientId)).get();
+			long patientId = poh.getPatientId();
+			Patient patient = pr.findById(patientId).get();
 			Doctor d = dr.findById(doctorId).get();
 			patient.setName(poh.getName());
 			patient.setAddress(poh.getAddress());

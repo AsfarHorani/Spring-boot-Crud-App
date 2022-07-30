@@ -7,7 +7,7 @@ import com.spring.task1.entites.Patient;
 public interface PatientService {
 	 
 	
-		public List<Patient> getPatients();
+		public List<Patient> getPatients( );
 		public Patient getPatient(long did);
 		public Patient addPatient(Patient patient);
 		public Patient updatePatient(Patient patient);

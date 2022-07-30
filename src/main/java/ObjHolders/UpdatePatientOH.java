@@ -1,13 +1,30 @@
 package ObjHolders;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class UpdatePatientOH {
+	
+	private long patientId;
 	private String name;
 	private int age;
 	private int mobileNo;
 	private String address;
 	private String email;
+	@JsonIgnore
 	private boolean deleted;
 	private long doctorId;
+	
+	
+	
+	
+	
+	
+	public long getPatientId() {
+		return patientId;
+	}
+	public void setPatientId(long patientId) {
+		this.patientId = patientId;
+	}
 	public String getName() {
 		return name;
 	}
