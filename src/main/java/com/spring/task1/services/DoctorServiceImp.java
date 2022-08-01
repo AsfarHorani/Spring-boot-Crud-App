@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.task1.dao.DoctorDao;
 import com.spring.task1.entites.Doctor;
+import com.spring.task1.exceptionHandler.ResourseNotFoundException;
 
 @Service
 public class DoctorServiceImp implements DoctorService{
@@ -21,9 +22,10 @@ public class DoctorServiceImp implements DoctorService{
 		return dd.findAll();	}
 
 	@Override
-	public Doctor getDoctor(long hid) {
+	public Doctor getDoctor(long did) {
 		// TODO Auto-generated method stub
-		return dd.findById(hid).get();
+		return dd.findById(did)
+				.orElseThrow(()-> new ResourseNotFoundException("Doctor",did)) ;
 	}
 
 	@Override
@@ -42,9 +44,11 @@ public class DoctorServiceImp implements DoctorService{
 	}
 
 	@Override
-	public void deleteDoctor(long pid) {
+	public void deleteDoctor(long did) {
 		// TODO Auto-generated method stub
-		Doctor entity =dd.findById(pid).get();
+		Doctor entity =dd.findById(did)
+				.orElseThrow(()-> new ResourseNotFoundException("Doctor",did)) ;
+
 		dd.delete(entity);
 	}
 

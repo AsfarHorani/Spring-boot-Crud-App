@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.task1.dao.HospitalDao;
 import com.spring.task1.entites.Hospital;
+import com.spring.task1.exceptionHandler.ResourseNotFoundException;
 
 @Service
 public class HospitalServiceImp implements HospitalService{
@@ -26,10 +27,12 @@ public List<Hospital> getHospitals() {
 }
 
 @Override
-public Hospital getHospital(long did) {
+public Hospital getHospital(long hid) {
 	// TODO Auto-generated method stub
-	System.out.println(did);
-	return hd.findById(did).get();
+	System.out.println(hid);
+	return hd.findById(hid)
+			.orElseThrow(()-> new ResourseNotFoundException("Hospital",hid)) ;
+
 
 }
 
@@ -50,10 +53,12 @@ public Hospital updateHospital(Hospital hospital) {
 }
 
 @Override
-public void deleteHospital(long did) {
+public void deleteHospital(long hid) {
 	// TODO Auto-generated method stub
 
-	Hospital entity =hd.findById(did).get();
+	Hospital entity =hd.findById(hid)
+			.orElseThrow(()-> new ResourseNotFoundException("Hospital",hid)) ;
+
 	hd.delete(entity);
 
 }

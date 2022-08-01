@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.task1.dao.PatientDao;
 import com.spring.task1.entites.Patient;
+import com.spring.task1.exceptionHandler.ResourseNotFoundException;
 
 
 @Service
@@ -26,20 +27,12 @@ public class PatientServiceImp implements PatientService{
     List<Patient> patients = pd.findAll();
   return patients;
   }
-//	public List<Patient> getPatients( boolean isDeleted) {
-//		// TODO Auto-generated method stub
-//		Session session = enitityManager.unwrap(Session.class);
-//        Filter filter = session.enableFilter("deletedPatientFilter");
-//        filter.setParameter("isDeleted", isDeleted);
-//        List<Patient> patients = pd.findAll();
-//        session.disableFilter("deletedProductFilter");
-//		return patients;
-//	}
+
 
 	@Override
 	public Patient getPatient(long pid) {
-		// TODO Auto-generated method stub
-		return pd.findById(pid).get();
+		return pd.findById(pid)
+				.orElseThrow(()-> new ResourseNotFoundException("Patient",pid)) ;
 	}
 
 	@Override

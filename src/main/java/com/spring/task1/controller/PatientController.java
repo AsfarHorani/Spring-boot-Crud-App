@@ -1,5 +1,6 @@
 package com.spring.task1.controller;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.*;
@@ -11,6 +12,9 @@ import com.spring.task1.Utils.Department;
 import com.spring.task1.dao.DoctorDao;
 import com.spring.task1.dao.PatientDao;
 import com.spring.task1.entites.*;
+import com.spring.task1.exceptionHandler.GlobalExceptionHandler;
+import com.spring.task1.exceptionHandler.ResourseNotFoundException;
+import com.spring.task1.services.DoctorService;
 import com.spring.task1.services.PatientService;
 
 import DTO.DeleteDTO;
@@ -22,50 +26,49 @@ import ObjHolders.UpdatePatientOH;
 public class PatientController {
 
 	@Autowired
-	public PatientService patientService; 
+	public PatientService patientService;
 	@Autowired
-	private DoctorDao dr;
+	public DoctorService doctorService;
 	
-	@Autowired
-	private PatientDao pr;
-
 	@GetMapping("/getPatients")
 	public List<Patient> getPatients() {
-		System.out.println("from get patients");
 
 		return this.patientService.getPatients();
 	}
-	
-	
+
 	@GetMapping("/getPatient/{patientId}")
-	public Patient getPatient(@PathVariable String patientId) {
+	public ResponseEntity getPatient(@PathVariable String patientId) {
 		System.out.println(patientId);
-		return this.patientService.getPatient(Long.parseLong(patientId));
+
+		Patient patient = this.patientService.getPatient(Long.parseLong(patientId));
+		return new ResponseEntity<>(patient, HttpStatus.OK);
+
+
 	}
-	
+
 	@PostMapping("/addPatient")
-	public Patient addPatient(@RequestBody AddPatientOH reqBody) {
-		
+	public ResponseEntity addPatient(@RequestBody AddPatientOH reqBody) {
+
 		Patient patient = new Patient();
-		Doctor d = dr.findById(reqBody.getDoctorId()).get();
-		
+		Doctor d = doctorService.getDoctor(reqBody.getDoctorId());
 		patient.setAddress(reqBody.getAddress());
 		patient.setAge(reqBody.getAge());
 		patient.setEmail(reqBody.getEmail());
 		patient.setMobileNo(reqBody.getMobileNo());
 		patient.setName(reqBody.getName());
 		patient.setDoctor(d);
-        return this.patientService.addPatient(patient);
+		Patient createdPatient = this.patientService.addPatient(patient);
+		return new ResponseEntity<>(createdPatient, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/updatePatient")
 	public ResponseEntity updatePatient(@RequestBody UpdatePatientOH poh) {
-		try {
-
+		
 			long doctorId = poh.getDoctorId();
 			long patientId = poh.getPatientId();
-			Patient patient = pr.findById(patientId).get();
-			Doctor d = dr.findById(doctorId).get();
+			Patient patient = this.patientService.getPatient(patientId);
+			Doctor d = doctorService.getDoctor(doctorId);
+
 			patient.setName(poh.getName());
 			patient.setAddress(poh.getAddress());
 			patient.setAge(poh.getAge());
@@ -73,29 +76,17 @@ public class PatientController {
 			patient.setMobileNo(poh.getMobileNo());
 			patient.setDoctor(d);
 			patient.setDeleted(poh.isDeleted());
-			this.patientService.updatePatient(patient);
-			return new ResponseEntity<>(HttpStatus.OK);
-		} catch (Exception e) {
-			System.out.println(e);
-			return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body( e.getMessage());
+			Patient upatedPatient = this.patientService.updatePatient(patient);
+			return new ResponseEntity<>(upatedPatient, HttpStatus.OK);
 
-		}
 	}
-	
-	
-	
+
 	@DeleteMapping("/deletePatient/{patientId}")
-	public ResponseEntity deletePatient(@PathVariable String patientId) {
-		try {
-		    this.patientService.deletePatient(Long.parseLong(patientId));
-			return  ResponseEntity.created(null).body(new DeleteDTO("Sucess! Patient is deleted", patientId));
-		} catch (Exception e) {
-			System.out.println(e);
-			return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body( e.getMessage());
-
-		}
+	public ResponseEntity <DeleteDTO>deletePatient(@PathVariable String patientId) {
+	
+			this.patientService.deletePatient(Long.parseLong(patientId));
+			return new ResponseEntity<DeleteDTO>(new DeleteDTO("Sucess! Patient is deleted", patientId),  HttpStatus.OK);
+		
 	}
-	
-	
-	
+
 }
