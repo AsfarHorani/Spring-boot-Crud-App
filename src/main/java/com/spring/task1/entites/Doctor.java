@@ -1,6 +1,8 @@
 package com.spring.task1.entites;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.spring.task1.Utils.Department;
 
 import java.util.List;
@@ -36,24 +38,27 @@ public class Doctor extends User {
 	  @JoinColumn(name = "hid", nullable = false)
 	  @OnDelete(action = OnDeleteAction.NO_ACTION)
 	  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	
 	  private Hospital hospital;
+	 
+	 @OneToMany(mappedBy = "doctor", fetch = FetchType.EAGER)
+     	private List<Patient> patients;
 
-//	@OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
-//	
-//	private List<Patient> patients;
+	 @JsonIgnore
+    public List<Patient> getPatients() {
+		return patients;
+	}
+
+	public void setPatients(List<Patient> patients) {
+		this.patients = patients;
+	}
 
 	public Doctor() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-//	public List<Patient> getPatients() {
-//		return patients;
-//	}
-//
-//	public void setPatients(List<Patient> patients) {
-//		this.patients = patients;
-//	}
+
 
 	public Doctor(long id, String name, Department dept) {
 		super();

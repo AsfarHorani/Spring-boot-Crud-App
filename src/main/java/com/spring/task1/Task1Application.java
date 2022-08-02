@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import com.spring.task1.Utils.Department;
 
 @SpringBootApplication
-@EnableSwagger2
 public class Task1Application {
     
 	static Department a;
@@ -20,11 +19,7 @@ public class Task1Application {
 			SpringApplication.run(Task1Application.class, args);
 	}
 	
-	  @Bean
-	   public Docket productApi() {
-	      return new Docket(DocumentationType.SWAGGER_2).select()
-	         .apis(RequestHandlerSelectors.basePackage("com.spring.task1")).build();
-	   }
+	
 
 }
 

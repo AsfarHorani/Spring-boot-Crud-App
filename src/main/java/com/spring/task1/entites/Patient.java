@@ -1,11 +1,13 @@
 package com.spring.task1.entites;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
 
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
@@ -16,21 +18,21 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 //
 @Entity
 @Table(name = "patient")
 @SQLDelete(sql = "UPDATE patient SET deleted = true WHERE id=?")
 //@Where(clause = "deleted=false")
 
+public class Patient extends User {
 
-public class Patient  extends User{
-        
-	  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-	  @JoinColumn(name = "did", nullable = false)
-	  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
-	  private Doctor doctor;
-	  @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false") 
-      private boolean deleted = Boolean.FALSE;
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "did", nullable = false)
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+	private Doctor doctor;
+	@Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+	private boolean deleted = Boolean.FALSE;
 
 	public Patient() {
 		super();
@@ -68,10 +70,4 @@ public class Patient  extends User{
 		return "Patient [doctor=" + doctor + ", deleted=" + deleted + "]";
 	}
 
-
-	
-	
-
-	
-	
 }
