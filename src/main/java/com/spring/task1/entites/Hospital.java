@@ -3,6 +3,7 @@ package com.spring.task1.entites;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -16,7 +17,7 @@ public class Hospital {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long hid;
-	private String name;
+    private String name;
 	private String location;
 	@Enumerated(EnumType.ORDINAL)
 	private H_Type htype;

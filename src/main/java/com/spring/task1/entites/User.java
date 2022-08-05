@@ -1,16 +1,22 @@
 package com.spring.task1.entites;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.*;
+
+@ApiModel(description = "Class representing a user tracked by the application.")
  @MappedSuperclass
 public class User {
 	@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long id;
-	
+
 	private String name;
+	 
 	private int age;
 	@Column(name = "email", unique=true)
+	
 	private String email;
 	@Column(name = "mobileNo", unique=true)
 	private long mobileNo;

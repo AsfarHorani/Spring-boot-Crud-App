@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spring.task1.entites.Hospital;
 import com.spring.task1.services.HospitalService;
 
-import DTO.DeleteDTO;
+import io.swagger.annotations.Api;
+import responseDTO.DeleteDTO;
 
 @RestController
+@Api(description = "Set of endpoints for Creating, Retrieving, Updating and Deleting of Hospital.")
+
 public class HospitalController {
 
 	@Autowired

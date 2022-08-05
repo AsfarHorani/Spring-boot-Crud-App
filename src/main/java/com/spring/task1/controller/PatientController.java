@@ -3,6 +3,8 @@ package com.spring.task1.controller;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +19,16 @@ import com.spring.task1.exceptionHandler.ResourseNotFoundException;
 import com.spring.task1.services.DoctorService;
 import com.spring.task1.services.PatientService;
 
-import DTO.DeleteDTO;
-import ObjHolders.AddPatientOH;
-import ObjHolders.UpdateDoctorOH;
-import ObjHolders.UpdatePatientOH;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import requestDTOs.AddPatientOH;
+import requestDTOs.UpdateDoctorOH;
+import requestDTOs.UpdatePatientOH;
+import responseDTO.DeleteDTO;
 
 @RestController
+@Api(description = "Set of endpoints for Creating, Retrieving, Updating and Deleting of Patient.")
+
 public class PatientController {
 
 	@Autowired
@@ -31,12 +37,15 @@ public class PatientController {
 	public DoctorService doctorService;
 	
 	@GetMapping("/getPatients")
+    @ApiOperation("Returns list of all patients in the system.")
 	public List<Patient> getPatients() {
 
 		return this.patientService.getPatients();
 	}
 
 	@GetMapping("/getPatient/{patientId}")
+    @ApiOperation("Returns a specific patient with the patientId provided")
+
 	public ResponseEntity getPatient(@PathVariable String patientId) {
 		System.out.println(patientId);
 
@@ -47,10 +56,21 @@ public class PatientController {
 	}
 
 	@PostMapping("/addPatient")
-	public ResponseEntity addPatient(@RequestBody AddPatientOH reqBody) {
+	@ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("Add a patient with its info provided")
 
-		Patient patient = new Patient();
-		Doctor d = doctorService.getDoctor(reqBody.getDoctorId());
+	public ResponseEntity addPatient(@Valid @RequestBody AddPatientOH reqBody) {
+
+		Patient patient = new Patient();	
+		
+		Doctor d=null;
+		if(reqBody.getDoctorId()!=0L)
+		{
+			
+			d = doctorService.getDoctor(reqBody.getDoctorId());
+
+		}
+		
 		patient.setAddress(reqBody.getAddress());
 		patient.setAge(reqBody.getAge());
 		patient.setEmail(reqBody.getEmail());
@@ -62,13 +82,14 @@ public class PatientController {
 	}
 
 	@PutMapping("/updatePatient")
+    @ApiOperation("update a patient with its info provided")
+
 	public ResponseEntity updatePatient(@RequestBody UpdatePatientOH poh) {
 		
 			long doctorId = poh.getDoctorId();
 			long patientId = poh.getPatientId();
 			Patient patient = this.patientService.getPatient(patientId);
 			Doctor d = doctorService.getDoctor(doctorId);
-
 			patient.setName(poh.getName());
 			patient.setAddress(poh.getAddress());
 			patient.setAge(poh.getAge());
@@ -82,10 +103,12 @@ public class PatientController {
 	}
 
 	@DeleteMapping("/deletePatient/{patientId}")
+    @ApiOperation("delete a patient with its info provided")
+
 	public ResponseEntity <DeleteDTO>deletePatient(@PathVariable String patientId) {
 	
 			this.patientService.deletePatient(Long.parseLong(patientId));
-			return new ResponseEntity<DeleteDTO>(new DeleteDTO("Sucess! Patient is deleted", patientId),  HttpStatus.OK);
+			return new ResponseEntity<DeleteDTO>(new DeleteDTO("Patient", patientId),  HttpStatus.OK);
 		
 	}
 

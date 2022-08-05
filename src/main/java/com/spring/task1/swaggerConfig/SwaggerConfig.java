@@ -1,12 +1,15 @@
-package com.spring.task1.swaggerConfig;
+		package com.spring.task1.swaggerConfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.google.common.base.Predicate;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -16,12 +19,14 @@ import static com.google.common.base.Predicates.or;
 
 @Configuration
 @EnableSwagger2
-public class SwaggerConfig {
+public class SwaggerConfig implements WebMvcConfigurer {
 
 	@Bean
 	public Docket postsApi() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("public-api")
-				.apiInfo(apiInfo()).select().paths(PathSelectors.any()).build();
+				.apiInfo(apiInfo()).select()
+				  .apis(RequestHandlerSelectors.basePackage("com.spring.task1.controller"))
+				  .paths(PathSelectors.any()).build();
 	}
 
 	
@@ -33,5 +38,17 @@ public class SwaggerConfig {
 				.contact("asfar@gmail.com").license("Asfar")
 				.licenseUrl("asfar@gmail.com").version("2.7").build();
 	}
+	
+	   @Override
+	    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
+	        registry
+	                .addResourceHandler("swagger-ui.html")
+	                .addResourceLocations("classpath:/META-INF/resources/");
+
+	        registry
+	                .addResourceHandler("/webjars/**")
+	                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+	    }
 
 }

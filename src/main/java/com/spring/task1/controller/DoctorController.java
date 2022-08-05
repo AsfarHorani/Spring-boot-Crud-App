@@ -2,6 +2,8 @@ package com.spring.task1.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,19 +14,22 @@ import com.spring.task1.dao.HospitalDao;
 import com.spring.task1.entites.Doctor;
 import com.spring.task1.entites.Hospital;
 import com.spring.task1.services.DoctorService;
+import com.spring.task1.services.HospitalService;
 
-import DTO.DeleteDTO;
-import ObjHolders.AddDoctorOH;
-import ObjHolders.UpdateDoctorOH;
+import io.swagger.annotations.Api;
+import requestDTOs.AddDoctorOH;
+import requestDTOs.UpdateDoctorOH;
+import responseDTO.DeleteDTO;
 
 @RestController
+@Api(description = "Set of endpoints for Creating, Retrieving, Updating and Deleting of Doctor.")
+
 public class DoctorController {
 	@Autowired
 	private DoctorService doctorService;
 	@Autowired
-	private HospitalDao hr;
-	@Autowired
-	private DoctorDao dr;
+	private HospitalService hs;
+	
 
 	// get all Doctors
 	@GetMapping("/getDoctors")
@@ -40,10 +45,14 @@ public class DoctorController {
 	}
 
 	// add a doctor
+	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/addDoctor/")
-	public Doctor addDoctor(@RequestBody AddDoctorOH reqBody) {
-		long hospitalId=  reqBody.getHospitalId();
-		Hospital h = hr.findById(hospitalId).get();
+	public ResponseEntity addDoctor(@Valid @RequestBody AddDoctorOH reqBody) {
+		long hospitalId = reqBody.getHospitalId();
+		Hospital h = null;
+		if (hospitalId != 0l) {
+			this.hs.getHospital(hospitalId);
+		}
 		Doctor doctor = new Doctor();
 		doctor.setName(reqBody.getName());
 		doctor.setAddress(reqBody.getAddress());
@@ -53,19 +62,22 @@ public class DoctorController {
 		doctor.setHospital(h);
 		doctor.setMobileNo(reqBody.getMobileNo());
 
-		return this.doctorService.addDoctor(doctor);
+		Doctor newDoc = this.doctorService.addDoctor(doctor);
+		return new ResponseEntity<>(newDoc, HttpStatus.OK);
+
 	}
 
 	// update hospital
 	@PutMapping("/updateDoctor")
-	public ResponseEntity<HttpStatus> updateDoctor(@RequestBody UpdateDoctorOH doh) {
-		try {
-			
+	public ResponseEntity updateDoctor(@Valid @RequestBody UpdateDoctorOH doh) {
+
 			long doctorId = doh.getDoctorId();
 			long hospitalId = doh.getHospitalId();
-			Doctor doctor = dr.findById(doctorId).get();
-			Hospital h = hr.findById(hospitalId).get();
-			doctor.setName(doh.getName());
+			Doctor doctor =   doctorService.getDoctor(doctorId);
+			Hospital h = null;
+			if (hospitalId != 0l) {
+				this.hs.getHospital(hospitalId);
+			}			doctor.setName(doh.getName());
 			doctor.setDept(Department.valueOf(Department.class, doh.getDept()));
 			doctor.setAddress(doh.getAddress());
 			doctor.setAge(doh.getAge());
@@ -73,25 +85,20 @@ public class DoctorController {
 			doctor.setMobileNo(doh.getMobileNo());
 			doctor.setHospital(h);
 			doctor.setDeleted(doh.isDeleted());
-			this.doctorService.updateDoctor(doctor);
-			return new ResponseEntity<>(HttpStatus.OK);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
-		}
+			Doctor updatedDoctor = this.doctorService.updateDoctor(doctor);
+			return new ResponseEntity<>(updatedDoctor, HttpStatus.OK);
+		
+		
+		
 	}
 
 	@DeleteMapping("/deleteDoctor/{doctorid}")
 	public ResponseEntity deleteDoctor(@PathVariable String doctorid) {
-		try {
+		
 			this.doctorService.deleteDoctor(Long.parseLong(doctorid));
-			return  ResponseEntity.created(null).body(new DeleteDTO("Sucess! Doctor is deleted", doctorid));
-		} catch (Exception e) {
-			System.out.println(e);
-			return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body( e.getMessage());
-
-		}
+			return new ResponseEntity<DeleteDTO>(new DeleteDTO("Doctor", doctorid),  HttpStatus.OK);
+			
+	
 	}
 
 }

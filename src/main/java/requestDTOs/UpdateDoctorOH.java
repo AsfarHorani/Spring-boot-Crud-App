@@ -1,16 +1,25 @@
-package ObjHolders;
+package requestDTOs;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class UpdateDoctorOH {
+	@NotNull
 	private long doctorId;
-	private String name;
+	@Size(min = 3, message = "Name is very short, should have atleast 3 characters")
+    @Size(max = 40, message = "Name is too long")
+	String name;
 	private String dept;
 	private int age;
 	private int mobileNo;
-	private String address;
-	private String email;
-	private long hospitalId;
+	@Size(min = 5, message = "Address must be of length minimun 5")
+	@Size(max = 100, message = "Address is too long, ca't contain more than 100 characters")
+    String address;	
+	@Email(message="Email is not valid!")
+	String email;	private long hospitalId;
 	@JsonIgnore
 	private boolean deleted;
 	
