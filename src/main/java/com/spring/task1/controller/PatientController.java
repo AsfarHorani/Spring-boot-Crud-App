@@ -1,6 +1,6 @@
 package com.spring.task1.controller;
 
-import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -10,21 +10,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.spring.task1.Utils.Department;
-import com.spring.task1.dao.DoctorDao;
-import com.spring.task1.dao.PatientDao;
+
 import com.spring.task1.entites.*;
-import com.spring.task1.exceptionHandler.GlobalExceptionHandler;
-import com.spring.task1.exceptionHandler.ResourseNotFoundException;
+
 import com.spring.task1.services.DoctorService;
 import com.spring.task1.services.PatientService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import requestDTOs.AddPatientOH;
-import requestDTOs.UpdateDoctorOH;
-import requestDTOs.UpdatePatientOH;
-import responseDTO.DeleteDTO;
+import requestdto.AddPatientOH;
+import requestdto.UpdatePatientOH;
+import responsedto.*;
 
 @RestController
 @Api(description = "Set of endpoints for Creating, Retrieving, Updating and Deleting of Patient.")
@@ -38,19 +34,46 @@ public class PatientController {
 	
 	@GetMapping("/getPatients")
     @ApiOperation("Returns list of all patients in the system.")
-	public List<Patient> getPatients() {
+	public ResponseEntity<List<PatientDto>>  getPatients() {
+// AddPatientOH(long id, String name, int age, int mobileNo, String address, String email, long doctorId)
 
-		return this.patientService.getPatients();
+		List<Patient> pl= this.patientService.getPatients();
+		List<PatientDto> pdt = new ArrayList<>();
+		for(Patient p : pl)
+		{
+		   if(!p.isDeleted())
+			pdt.add(new PatientDto(
+					p.getId(),
+					p.getName(),
+					p.getAge(),
+					p.getMobileNo(),
+					p.getAddress(),
+					p.getEmail(),
+					p.getDoctor().getId()));
+		   
+
+		}
+		return new ResponseEntity<>(pdt, HttpStatus.OK);
+
 	}
 
 	@GetMapping("/getPatient/{patientId}")
     @ApiOperation("Returns a specific patient with the patientId provided")
 
-	public ResponseEntity getPatient(@PathVariable String patientId) {
+	public ResponseEntity<PatientDto> getPatient(@PathVariable String patientId) {
 		System.out.println(patientId);
 
-		Patient patient = this.patientService.getPatient(Long.parseLong(patientId));
-		return new ResponseEntity<>(patient, HttpStatus.OK);
+		Patient p = this.patientService.getPatient(Long.parseLong(patientId));
+		PatientDto pdt = new PatientDto(
+				p.getId(),
+				p.getName(),
+				p.getAge(),
+				p.getMobileNo(),
+				p.getAddress(),
+				p.getEmail(),
+				p.getDoctor().getId());
+
+		return new ResponseEntity<>(pdt, HttpStatus.OK);
 
 
 	}
@@ -59,7 +82,7 @@ public class PatientController {
 	@ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Add a patient with its info provided")
 
-	public ResponseEntity addPatient(@Valid @RequestBody AddPatientOH reqBody) {
+	public ResponseEntity<PatientDto> addPatient(@Valid @RequestBody AddPatientOH reqBody) {
 
 		Patient patient = new Patient();	
 		
@@ -77,14 +100,22 @@ public class PatientController {
 		patient.setMobileNo(reqBody.getMobileNo());
 		patient.setName(reqBody.getName());
 		patient.setDoctor(d);
-		Patient createdPatient = this.patientService.addPatient(patient);
-		return new ResponseEntity<>(createdPatient, HttpStatus.OK);
+		Patient p = this.patientService.addPatient(patient);
+		PatientDto pdt = new PatientDto(
+				p.getId(),
+				p.getName(),
+				p.getAge(),
+				p.getMobileNo(),
+				p.getAddress(),
+				p.getEmail(),
+				p.getDoctor().getId());
+		return new ResponseEntity<>(pdt, HttpStatus.OK);
 	}
 
 	@PutMapping("/updatePatient")
     @ApiOperation("update a patient with its info provided")
 
-	public ResponseEntity updatePatient(@RequestBody UpdatePatientOH poh) {
+	public ResponseEntity<PatientDto> updatePatient(@RequestBody UpdatePatientOH poh) {
 		
 			long doctorId = poh.getDoctorId();
 			long patientId = poh.getPatientId();
@@ -97,18 +128,29 @@ public class PatientController {
 			patient.setMobileNo(poh.getMobileNo());
 			patient.setDoctor(d);
 			patient.setDeleted(poh.isDeleted());
-			Patient upatedPatient = this.patientService.updatePatient(patient);
-			return new ResponseEntity<>(upatedPatient, HttpStatus.OK);
+			Patient p = this.patientService.updatePatient(patient);
+			
+			PatientDto pdt = new PatientDto(
+					p.getId(),
+					p.getName(),
+					p.getAge(),
+					p.getMobileNo(),
+					p.getAddress(),
+					p.getEmail(),
+					p.getDoctor().getId());
+			
+			
+			return new ResponseEntity<>(pdt, HttpStatus.OK);
 
 	}
 
 	@DeleteMapping("/deletePatient/{patientId}")
     @ApiOperation("delete a patient with its info provided")
 
-	public ResponseEntity <DeleteDTO>deletePatient(@PathVariable String patientId) {
+	public ResponseEntity <GeneralResponseDto>deletePatient(@PathVariable String patientId) {
 	
 			this.patientService.deletePatient(Long.parseLong(patientId));
-			return new ResponseEntity<DeleteDTO>(new DeleteDTO("Patient", patientId),  HttpStatus.OK);
+			return new ResponseEntity<GeneralResponseDto>(new GeneralResponseDto("Patient with id "+patientId+"has been deleted succesfully"),  HttpStatus.OK);
 		
 	}
 

@@ -1,4 +1,4 @@
-package requestDTOs;
+package requestdto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.validation.constraints.*;
@@ -6,17 +6,37 @@ import javax.validation.constraints.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AddPatientOH {
 	
-    long doctorId;
-  String address;
+   long doctorId;
+	@Size(min = 5, message = "Address must be of length minimun 5")
+	@Size(max = 100, message = "Address is too long, ca't contain more than 100 characters")
+   String address;
+   int age;
 
-	int age;
-
+	@Email(message="Email is not valid!")
 	String email;
-	
 	long mobileNo;
 	
-
+	@Size(min = 3, message = "Name is very short, should have atleast 3 characters")
+    @Size(max = 40, message = "Name is too long")
+	
 	String name;
+
+	
+	
+public AddPatientOH( String name, int age, long mobileNo, String address, String email, long doctorId) {
+	super();
+		this.doctorId = doctorId;
+		this.address = address;
+		this.age = age;
+		this.email = email;
+		this.mobileNo = mobileNo;
+		this.name = name;
+	}
+
+
+
+
+
 
 	public long getDoctorId() {
 		return doctorId;

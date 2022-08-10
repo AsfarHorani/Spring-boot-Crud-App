@@ -6,13 +6,13 @@ import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class ApiResponse  {
+public class ErrorResponse  {
 	String message;
     Boolean sucess ;
     private HttpStatus httpStatus;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime localDateTime;
-	public ApiResponse(String message, Boolean sucess, HttpStatus httpStatus) {
+	public ErrorResponse(String message, Boolean sucess, HttpStatus httpStatus) {
 		super();
 		this.message = message;
 		this.sucess = sucess;

@@ -1,4 +1,4 @@
-package requestDTOs;
+package requestdto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -23,8 +23,6 @@ public class UpdatePatientOH {
 	@JsonIgnore
 	private boolean deleted;
 	private long doctorId;
-	
-	
 	
 	
 	

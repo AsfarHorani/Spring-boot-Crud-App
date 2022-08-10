@@ -1,4 +1,4 @@
-package requestDTOs;
+package requestdto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
